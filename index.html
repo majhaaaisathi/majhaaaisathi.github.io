@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Majha Aai Sathi 🩷</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #c8768a;
+    --rose-light: #f5e0e5;
+    --gold: #d4a843;
+    --sage: #7a9e7e;
+    --cream: #fdf8f2;
+    --text: #3a2e2e;
+    --text-muted: #7a6a6a;
+    --line: #e8d5da;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Lato', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 2rem 1.5rem;
+    background: linear-gradient(160deg, #fdf4f6 0%, #fdf8f2 50%, #eaf2eb 100%);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(200,118,138,0.12) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero::after {
+    content: ''; position: absolute; bottom: -80px; left: -80px;
+    width: 380px; height: 380px;
+    background: radial-gradient(circle, rgba(122,158,126,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+  }
+  .hero-petals { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; overflow: hidden; }
+  .petal { position: absolute; opacity: 0; animation: fall linear infinite; }
+  @keyframes fall {
+    0%   { transform: translateY(-20px) rotate(0deg); opacity: 0; }
+    10%  { opacity: 0.6; }
+    90%  { opacity: 0.3; }
+    100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+  }
+  .hero-tag {
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--rose); margin-bottom: 1.2rem;
+    opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 8vw, 5.5rem); font-weight: 700;
+    line-height: 1.1; color: var(--text); margin-bottom: 1rem;
+    opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+  .hero h1 em { font-style: italic; color: var(--rose); }
+  .hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.25rem); color: var(--text-muted); font-weight: 300;
+    max-width: 480px; line-height: 1.7; margin-bottom: 2.5rem;
+    opacity: 0; animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+  .scroll-hint {
+    display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+    opacity: 0; animation: fadeUp 0.8s ease 1s forwards;
+  }
+  .scroll-hint span { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); }
+  .scroll-arrow {
+    width: 28px; height: 28px; border-radius: 50%; border: 1.5px solid var(--rose);
+    display: flex; align-items: center; justify-content: center;
+    animation: bounce 2s ease infinite 1.5s;
+  }
+  @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+
+  /* STAT STRIP */
+  .stat-strip {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem;
+    padding: 3rem 1.5rem; background: white;
+    border-top: 1px solid var(--rose-light); border-bottom: 1px solid var(--rose-light);
+  }
+  .stat-item { text-align: center; padding: 1rem 1.5rem; min-width: 120px; }
+  .stat-num {
+    font-family: 'Playfair Display', serif; font-size: 2.2rem; font-weight: 700;
+    color: var(--rose); display: block; line-height: 1; margin-bottom: 0.3rem;
+  }
+  .stat-label { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-muted); }
+
+  /* TIMELINE */
+  .timeline-section {
+    padding: 5rem 1.5rem 4rem; max-width: 800px; margin: 0 auto; position: relative;
+  }
+  .timeline-axis {
+    position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
+    background: linear-gradient(to bottom, transparent 0%, var(--line) 5%, var(--line) 95%, transparent 100%);
+    transform: translateX(-50%);
+  }
+  .year-entry {
+    display: grid; grid-template-columns: 1fr 48px 1fr;
+    align-items: start; margin-bottom: 4rem;
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .year-entry.visible { opacity: 1; transform: none; }
+
+  .year-entry.left .entry-card { grid-column: 1; text-align: right; }
+  .year-entry.left .entry-node { grid-column: 2; }
+  .year-entry.left .entry-empty { grid-column: 3; }
+  .year-entry.right .entry-empty { grid-column: 1; }
+  .year-entry.right .entry-node { grid-column: 2; }
+  .year-entry.right .entry-card { grid-column: 3; }
+
+  .entry-node {
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+    position: relative; z-index: 2;
+  }
+  .node-dot {
+    width: 48px; height: 48px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0;
+    border: 3px solid white; box-shadow: 0 0 0 2px var(--rose-light);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .year-entry:hover .node-dot { transform: scale(1.1); box-shadow: 0 0 0 4px var(--rose-light); }
+  .node-year {
+    font-family: 'Playfair Display', serif; font-size: 0.8rem; font-weight: 700;
+    color: var(--rose); white-space: nowrap;
+  }
+  .entry-card {
+    padding: 1.1rem 1.3rem; border-radius: 16px; background: white;
+    box-shadow: 0 2px 16px rgba(200,118,138,0.08); border: 1px solid rgba(200,118,138,0.12);
+    transition: transform 0.3s, box-shadow 0.3s; position: relative; overflow: hidden;
+  }
+  .entry-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 16px 16px 0 0;
+  }
+  .entry-card.color-rose::before { background: var(--rose); }
+  .entry-card.color-gold::before { background: var(--gold); }
+  .entry-card.color-sage::before { background: var(--sage); }
+  .year-entry:hover .entry-card { transform: translateY(-3px); box-shadow: 0 6px 24px rgba(200,118,138,0.15); }
+  .entry-card h3 {
+    font-family: 'Playfair Display', serif; font-size: 1.05rem; font-weight: 700;
+    color: var(--text); margin-bottom: 0.35rem; line-height: 1.3;
+  }
+  .entry-card p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; font-weight: 300; }
+  .entry-empty { /* spacer */ }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    .timeline-axis { left: 28px; }
+    .year-entry { grid-template-columns: 56px 1fr !important; }
+    .year-entry .entry-node { grid-column: 1 !important; grid-row: 1; }
+    .year-entry .entry-card { grid-column: 2 !important; grid-row: 1; text-align: left !important; }
+    .year-entry .entry-empty { display: none !important; }
+    .timeline-section { padding: 4rem 1rem 3rem; }
+  }
+
+  /* SECTION HEADER */
+  .section-header {
+    text-align: center; margin-bottom: 4rem;
+    opacity: 0; transform: translateY(20px);
+    transition: opacity 0.7s, transform 0.7s;
+  }
+  .section-header.visible { opacity: 1; transform: none; }
+  .section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.5rem); color: var(--text); margin-bottom: 0.5rem;
+  }
+  .section-header p { color: var(--text-muted); font-size: 1rem; font-weight: 300; }
+  .divider { width: 60px; height: 2px; background: var(--rose); margin: 0.8rem auto 0; border-radius: 2px; }
+
+  /* CLOSING */
+  .closing {
+    background: linear-gradient(160deg, #fdf4f6 0%, #fdf0f5 100%);
+    padding: 6rem 1.5rem 8rem; text-align: center; position: relative; overflow: hidden;
+  }
+  .closing::before {
+    content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(200,118,138,0.08) 0%, transparent 70%);
+    border-radius: 50%; pointer-events: none;
+  }
+  .heart-big { font-size: 3.5rem; display: block; margin: 0 auto 1.5rem; animation: heartbeat 1.4s ease infinite; }
+  @keyframes heartbeat {
+    0%,100% { transform: scale(1); } 14% { transform: scale(1.15); }
+    28% { transform: scale(1); } 42% { transform: scale(1.08); } 56% { transform: scale(1); }
+  }
+  .closing h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 6vw, 3.5rem); font-weight: 700; color: var(--text);
+    margin-bottom: 1.2rem; line-height: 1.2;
+  }
+  .closing h2 em { color: var(--rose); font-style: italic; }
+  .closing-msg {
+    font-size: clamp(1rem, 2.5vw, 1.15rem); color: var(--text-muted);
+    max-width: 520px; margin: 0 auto 1.5rem; line-height: 1.8; font-weight: 300;
+  }
+  .closing-sig {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 1.4rem; color: var(--rose); opacity: 0; transition: opacity 1s ease;
+  }
+  .closing-sig.visible { opacity: 1; }
+  .flowers-row {
+    display: flex; justify-content: center; gap: 0.5rem; font-size: 1.8rem; margin-bottom: 2rem;
+    opacity: 0; animation: fadeUp 1s ease 0.3s forwards;
+  }
+  .flowers-row span { animation: sway 3s ease-in-out infinite; display: inline-block; }
+  .flowers-row span:nth-child(2) { animation-delay: 0.3s; }
+  .flowers-row span:nth-child(3) { animation-delay: 0.6s; }
+  .flowers-row span:nth-child(4) { animation-delay: 0.9s; }
+  .flowers-row span:nth-child(5) { animation-delay: 1.2s; }
+  @keyframes sway { 0%,100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+</style>
+</head>
+<body>
+
+<div class="hero-petals" id="petals"></div>
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  HERO — edit the subtitle below             ║
+     ╚══════════════════════════════════════════════╝ -->
+<section class="hero">
+  <p class="hero-tag">Mother's Day 2025</p>
+  <h1>A journey through<br><em>16 years of love</em></h1>
+
+  <!-- ✏️ YOUR OPENING MESSAGE TO MOM -->
+  <p class="hero-sub">Your opening message here — e.g. "From the very first day, you made my world beautiful."</p>
+
+  <div class="scroll-hint">
+    <span>Scroll to begin</span>
+    <div class="scroll-arrow">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M6 2v8M2 7l4 4 4-4"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- STATS STRIP -->
+<div class="stat-strip">
+  <div class="stat-item">
+    <span class="stat-num" data-count="16">0</span>
+    <span class="stat-label">Years of motherhood</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num" data-count="5840">0</span>
+    <span class="stat-label">Days by my side</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">∞</span>
+    <span class="stat-label">Hugs &amp; kisses</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">1</span>
+    <!-- ✏️ Change this label to something personal, e.g. "Mum's home-cooked meals" -->
+    <span class="stat-label">Mom like you</span>
+  </div>
+</div>
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  TIMELINE — for each year:                  ║
+     ║  1. Change the <h3> to a short title        ║
+     ║  2. Change the <p> to your real memory      ║
+     ║  You can add/remove year-entry blocks too   ║
+     ╚══════════════════════════════════════════════╝ -->
+<section class="timeline-section">
+  <div class="timeline-axis"></div>
+
+  <div class="section-header" id="timeline-header">
+    <h2>Our Timeline</h2>
+    <p>The years we've shared together</p>
+    <div class="divider"></div>
+  </div>
+
+  <!-- ── 2009 ── -->
+  <div class="year-entry right">
+    <div class="entry-empty"></div>
+    <div class="entry-node">
+      <div class="node-dot" style="background:linear-gradient(135deg,#f9c5d1,#f5a0b5);">🌸</div>
+      <span class="node-year">2009</span>
+    </div>
+    <div class="entry-card color-rose">
+      <!-- ✏️ Title for 2009 -->
+      <h3>The Day I Was Born</h3>
+      <!-- ✏️ Your memory for 2009 — the day you were born, what Mom felt, etc. -->
+      <p>Write your memory or message for 2009 here — e.g. "You became a mom on [date]. The moment you held me, everything changed."</p>
+    </div>
+  </div>
+
+  <!-- ── 2011 ── -->
+  <div class="year-entry left">
+    <div class="entry-card color-gold">
+      <!-- ✏️ Title for 2011 -->
+      <h3>My First Steps</h3>
+      <!-- ✏️ Your memory for 2011 -->
+      <p>Write your memory for 2011 here — e.g. "You cheered me on every wobbly step. I didn't know it then, but you've been doing that ever since."</p>
+    </div>
+    <div class="entry-node">
+      <div class="node-dot" style="background:linear-gradient(135deg,#fde8a0,#f9cf63);">👶</div>
+      <span class="node-year">2011</span>
+    </div>
+    <div class="entry-empty"></div>
+  </div>
+
+  <!-- ── 2013 ── -->
+  <div class="year-entry right">
+    <div class="entry-empty"></div>
+    <div class="entry-node">
+      <div class="node-dot" style="background:linear-gradient(135deg,#b8dfc0,#7ec88b);">🎒</div>
+      <span class="node-year">2013</span>
+    </div>
+    <div class="entry-card color-sage">
+      <!-- ✏️ Title for 2013 -->
+      <h3>First Day of School</h3>
+      <!-- ✏️ Your memory for 2013 -->
+      <p>Write your memory for 2013 here — e.g. "You packed my lunch with a little note inside. I still remember opening it."</p>
+    </div>
+  </div>
+
+  <!-- ── 2015 ── -->
+  <div class="year-entry left">
+    <div class="entry-card color-rose">
+      <!-- ✏️ Title for 2015 -->
+      <h3>Our Favorite Tradition</h3>
+      <!-- ✏️ Your memory for 2015 -->
+      <p>Write your memory for 2015 here — e.g. "Every [season/holiday], we would always [tradition]. It's one of my favorites."</p>
+    </div>
+    <div class="entry-node">
+      <div class="node-dot" style="background:linear-gradient(135deg,#f9c5d1,#f5a0b5);">🌟</div>
+      <span class="node-year">2015</span>
+    </div>
+    <div class="entry-empty"></div>
+  </div>
+
+  <!-- ── 2017 ── -->
+  <div class="year-entry right">
+    <div class="entry-empty"></div>
+    <div class="entry-node">
+      <div class="node-dot" style="background:linear-gradient(135deg,#fde8a0,#f9cf63);">⭐</div>
+      <span class="node-year">2017</span>
+    </div>
+    <div class="entry-card color-gold">
+      <!-- ✏️ Title for 2017 -->
+      <h3>You Believed in Me</h3>
+      <!-- ✏️ Your memory for 2017 -->
+      <p>Write your memory for 2017 here — e.g. "When I wanted to try [hobby/activity], you were the first one cheering me on."</p>
+    </div>
+  </div>
+
+  <!-- ── 2019 ── -->
+  <div class="year-entry left">
+    <div class="entry-card color-sage">
+      <!-- ✏️ Title for 2019 -->
+      <h3>My Safe Place</h3>
+      <!-- ✏️ Your memory for 2019 -->
+      <p>Write your memory for 2019 here — e.g. "This was a hard year but you always knew exactly what to say. You were my safe place."</p>
+    </div>
+    <div class="entry-node">
+      <div class="node-dot" style="background:linear-gradient(135deg,#b8dfc0,#7ec88b);">🌿</div>
+      <span class="node-year">2019</span>
+    </div>
+    <div class="entry-empty"></div>
+  </div>
+
+  <!-- ── 2021 ── -->
+  <div class="year-entry right">
+    <div class="entry-empty"></div>
+    <div class="entry-node">
+      <div class="node-dot" style="background:linear-gradient(135deg,#f9c5d1,#f5a0b5);">🏠</div>
+      <span class="node-year">2021</span>
+    </div>
+    <div class="entry-card color-rose">
+      <!-- ✏️ Title for 2021 -->
+      <h3>Laughing Together</h3>
+      <!-- ✏️ Your memory for 2021 -->
+      <p>Write your memory for 2021 here — e.g. "Remember when we [funny/sweet shared moment]? I'll never stop laughing about that."</p>
+    </div>
+  </div>
+
+  <!-- ── 2023 ── -->
+  <div class="year-entry left">
+    <div class="entry-card color-gold">
+      <!-- ✏️ Title for 2023 -->
+      <h3>Growing Up</h3>
+      <!-- ✏️ Your memory for 2023 -->
+      <p>Write your memory for 2023 here — e.g. "I started to realize just how much you've shaped who I am. Thank you for [specific thing]."</p>
+    </div>
+    <div class="entry-node">
+      <div class="node-dot" style="background:linear-gradient(135deg,#fde8a0,#f9cf63);">🎓</div>
+      <span class="node-year">2023</span>
+    </div>
+    <div class="entry-empty"></div>
+  </div>
+
+  <!-- ── 2025 ── -->
+  <div class="year-entry right">
+    <div class="entry-empty"></div>
+    <div class="entry-node">
+      <div class="node-dot" style="background:linear-gradient(135deg,#f9c5d1,#f5a0b5);box-shadow:0 0 0 4px rgba(200,118,138,0.25);">💛</div>
+      <span class="node-year">2025</span>
+    </div>
+    <div class="entry-card color-rose">
+      <!-- ✏️ Title for 2025 — today -->
+      <h3>Today</h3>
+      <!-- ✏️ Your message for right now -->
+      <p>Write your message for 2025 here — e.g. "Everything I am, I learned from watching you. You are extraordinary, Mom."</p>
+    </div>
+  </div>
+
+</section>
+
+<!-- ╔══════════════════════════════════════════════╗
+     ║  CLOSING — edit the two paragraphs          ║
+     ║  and the signature line below               ║
+     ╚══════════════════════════════════════════════╝ -->
+<section class="closing">
+  <div class="flowers-row">
+    <span>🌷</span><span>🌸</span><span>🌼</span><span>🌸</span><span>🌷</span>
+  </div>
+  <span class="heart-big">💖</span>
+  <h2>Thank you for being<br><em>the best mom ever</em></h2>
+
+  <!-- ✏️ YOUR FIRST CLOSING PARAGRAPH -->
+  <p class="closing-msg">Your heartfelt closing message here — e.g. "You turned ordinary days into extraordinary memories. You made me feel safe, loved, and capable of anything."</p>
+
+  <!-- ✏️ YOUR FINAL LINE -->
+  <p class="closing-msg" style="font-style:italic;font-size:1.05rem;">Your final line here — e.g. "Happy Mother's Day. I love you more than words can say. 🌸"</p>
+
+  <!-- ✏️ YOUR NAME -->
+  <p class="closing-sig" id="closing-sig">— With all my love, [Your Name]</p>
+</section>
+
+<script>
+  // Falling petals
+  const pc = document.getElementById('petals');
+  ['🌸','🌷','🌼','✿','❀'].forEach((e, i) => {
+    for (let j = 0; j < 3; j++) {
+      const p = document.createElement('div');
+      p.className = 'petal'; p.textContent = e;
+      p.style.cssText = `left:${Math.random()*100}%;font-size:${0.8+Math.random()*1.2}rem;animation-duration:${6+Math.random()*10}s;animation-delay:${Math.random()*8}s;`;
+      pc.appendChild(p);
+    }
+  });
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.15 });
+  document.querySelectorAll('.year-entry, .section-header').forEach(el => obs.observe(el));
+
+  // Signature fade
+  const sigObs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), 600); }), { threshold: 0.5 });
+  sigObs.observe(document.getElementById('closing-sig'));
+
+  // Counting numbers
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const co = new IntersectionObserver(es => {
+      es.forEach(e => {
+        if (!e.isIntersecting) return;
+        const t = parseInt(el.dataset.count), inc = t / (1800/16);
+        let c = 0;
+        const tm = setInterval(() => { c = Math.min(c+inc, t); el.textContent = Math.floor(c).toLocaleString(); if (c >= t) clearInterval(tm); }, 16);
+        co.unobserve(el);
+      });
+    }, { threshold: 0.5 });
+    co.observe(el);
+  });
+</script>
+</body>
+</html>
