@@ -16,6 +16,43 @@
   html { scroll-behavior: smooth; }
   body { font-family: 'Lato', sans-serif; background: var(--cream); color: var(--text); overflow-x: hidden; }
 
+  /* ── FULL-PAGE PETAL CANVAS ── */
+  #petal-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 999;
+    overflow: hidden;
+  }
+
+  .petal {
+    position: absolute;
+    top: -60px;
+    opacity: 0;
+    will-change: transform, opacity;
+    animation: petalFall linear infinite;
+  }
+
+  /* SVG cherry blossom petal shape */
+  .petal svg {
+    display: block;
+  }
+
+  @keyframes petalFall {
+    0% {
+      opacity: 0;
+      transform: translateY(0px) rotate(0deg) translateX(0px);
+    }
+    5% { opacity: 1; }
+    85% { opacity: 0.7; }
+    100% {
+      opacity: 0;
+      transform: translateY(105vh) rotate(540deg) translateX(var(--sway));
+    }
+  }
+
+  /* HERO */
   .hero {
     min-height: 100vh; display: flex; flex-direction: column;
     align-items: center; justify-content: center;
@@ -25,9 +62,7 @@
   }
   .hero::before { content:''; position:absolute; top:-60px; right:-60px; width:300px; height:300px; background:radial-gradient(circle,rgba(200,118,138,0.12) 0%,transparent 70%); border-radius:50%; }
   .hero::after  { content:''; position:absolute; bottom:-80px; left:-80px; width:380px; height:380px; background:radial-gradient(circle,rgba(122,158,126,0.1) 0%,transparent 70%); border-radius:50%; }
-  .hero-petals { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; overflow:hidden; }
-  .petal { position:absolute; opacity:0; animation:fall linear infinite; }
-  @keyframes fall { 0%{transform:translateY(-20px) rotate(0deg);opacity:0;} 10%{opacity:0.6;} 90%{opacity:0.3;} 100%{transform:translateY(110vh) rotate(360deg);opacity:0;} }
+
   .hero-tag { font-size:.75rem; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--rose); margin-bottom:1.2rem; opacity:0; animation:fadeUp .8s ease .2s forwards; }
   .hero h1 { font-family:'Playfair Display',serif; font-size:clamp(2.8rem,8vw,5.5rem); font-weight:700; line-height:1.1; color:var(--text); margin-bottom:1rem; opacity:0; animation:fadeUp .8s ease .4s forwards; }
   .hero h1 em { font-style:italic; color:var(--rose); }
@@ -60,7 +95,6 @@
   .year-entry:hover .node-dot { transform:scale(1.1); box-shadow:0 0 0 4px var(--rose-light); }
   .node-year { font-family:'Playfair Display',serif; font-size:.8rem; font-weight:700; color:var(--rose); white-space:nowrap; }
 
-  /* Photo card */
   .entry-card { border-radius:16px; background:white; box-shadow:0 2px 16px rgba(200,118,138,0.08); border:1px solid rgba(200,118,138,0.12); transition:transform .3s,box-shadow .3s; position:relative; overflow:hidden; text-align:center; }
   .year-entry:hover .entry-card { transform:translateY(-3px); box-shadow:0 6px 24px rgba(200,118,138,0.15); }
   .entry-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
@@ -68,17 +102,10 @@
   .entry-card.color-gold::before { background:var(--gold); }
   .entry-card.color-sage::before { background:var(--sage); }
 
-  /* Photo slot — replace this div with an <img> when ready */
-  .photo-slot {
-    width:100%; aspect-ratio:4/3;
-    background:linear-gradient(135deg,#f5e0e5 0%,#fdf4f6 50%,#eaf2eb 100%);
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.5rem;
-    border-bottom:1px solid var(--rose-light);
-  }
+  .photo-slot { width:100%; aspect-ratio:4/3; background:linear-gradient(135deg,#f5e0e5 0%,#fdf4f6 50%,#eaf2eb 100%); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:.5rem; border-bottom:1px solid var(--rose-light); }
   .photo-slot .icon { font-size:2rem; opacity:.35; }
   .photo-slot .hint { font-size:.68rem; letter-spacing:.1em; text-transform:uppercase; color:var(--rose); opacity:.55; font-weight:600; }
 
-  /* Caption */
   .photo-caption { padding:.85rem 1rem 1rem; }
   .photo-caption h3 { font-family:'Playfair Display',serif; font-size:.95rem; font-weight:700; color:var(--text); margin-bottom:.3rem; line-height:1.3; }
   .photo-caption p { font-size:.82rem; color:var(--text-muted); line-height:1.55; font-weight:300; font-style:italic; }
@@ -117,7 +144,8 @@
 </head>
 <body>
 
-<div class="hero-petals" id="petals"></div>
+<!-- Full-page cherry blossom petal layer -->
+<div id="petal-canvas"></div>
 
 <section class="hero">
   <p class="hero-tag">Mother's Day 2026</p>
@@ -147,7 +175,7 @@
   </div>
 
   <!-- HOW TO ADD A REAL PHOTO:
-       Replace the <div class="photo-slot">...</div> block with:
+       Replace <div class="photo-slot">...</div> with:
        <img src="filename.jpg" alt="description" style="width:100%;display:block;border-radius:13px 13px 0 0;border-bottom:1px solid var(--rose-light);">
   -->
 
@@ -162,18 +190,17 @@
       <div class="photo-slot"><span class="icon">📷</span><span class="hint">Add photo here</span></div>
       <div class="photo-caption">
         <h3>The Day I Was Born</h3>
-        <p>March 13th, 2009 - you became a Mom for the first time.</p>
+        <p>March 13th, 2009 — you became a Mom for the first time.</p>
       </div>
     </div>
   </div>
 
-  <!-- 2011 -->
+  <!-- 2010 -->
   <div class="year-entry left">
     <div class="entry-card color-gold">
       <div class="photo-slot"><span class="icon">📷</span><span class="hint">Add photo here</span></div>
       <div class="photo-caption">
         <h3>My First Steps</h3>
-        <!-- ✏️ Caption for 2011 -->
         <p>You helped me take my first steps.</p>
       </div>
     </div>
@@ -184,7 +211,7 @@
     <div class="entry-empty"></div>
   </div>
 
-  <!-- 2013 -->
+  <!-- 2012 -->
   <div class="year-entry right">
     <div class="entry-empty"></div>
     <div class="entry-node">
@@ -195,19 +222,17 @@
       <div class="photo-slot"><span class="icon">📷</span><span class="hint">Add photo here</span></div>
       <div class="photo-caption">
         <h3>Helping me Learn</h3>
-        <!-- ✏️ Caption for 2013 -->
         <p>You supported me so I could learn more things that would help me in life.</p>
       </div>
     </div>
   </div>
 
-  <!-- 2015 -->
+  <!-- 2013 -->
   <div class="year-entry left">
     <div class="entry-card color-rose">
       <div class="photo-slot"><span class="icon">📷</span><span class="hint">Add photo here</span></div>
       <div class="photo-caption">
         <h3>First Day of School</h3>
-        <!-- ✏️ Caption for 2015 -->
         <p>You made sure I had a good education for my life from the very beginning.</p>
       </div>
     </div>
@@ -217,7 +242,6 @@
     </div>
     <div class="entry-empty"></div>
   </div>
-
 
   <!-- 2021 -->
   <div class="year-entry right">
@@ -230,7 +254,6 @@
       <div class="photo-slot"><span class="icon">📷</span><span class="hint">Add photo here</span></div>
       <div class="photo-caption">
         <h3>Laughing Together</h3>
-        <!-- ✏️ Caption for 2021 -->
         <p>Write your caption for 2021 here.</p>
       </div>
     </div>
@@ -242,7 +265,6 @@
       <div class="photo-slot"><span class="icon">📷</span><span class="hint">Add photo here</span></div>
       <div class="photo-caption">
         <h3>Growing Up</h3>
-        <!-- ✏️ Caption for 2023 -->
         <p>Write your caption for 2023 here.</p>
       </div>
     </div>
@@ -264,7 +286,6 @@
       <div class="photo-slot"><span class="icon">📷</span><span class="hint">Add photo here</span></div>
       <div class="photo-caption">
         <h3>Today</h3>
-        <!-- ✏️ Caption for 2025 -->
         <p>With one year left before I head out to college, I'm grateful for just how much you have done for me.</p>
       </div>
     </div>
@@ -277,38 +298,91 @@
     <span>🌷</span><span>🌸</span><span>🌼</span><span>🌸</span><span>🌷</span>
   </div>
   <span class="heart-big">💖</span>
-  <h2>
-आई, माझं तुझ्यावर<br><em>खूप प्रेम आहे.</em></h2>
-  <!-- ✏️ YOUR FIRST CLOSING PARAGRAPH -->
+  <h2>आई, माझं तुझ्यावर<br><em>खूप प्रेम आहे.</em></h2>
   <p class="closing-msg">आई - ज्या दिवशी माझा जन्म झाला, त्या दिवसापासून तू माझ्यासाठी खूप काही केले आहेस आणि आजही करत आहेस. तू जगातील सर्वोत्तम आई आहेस आणि याची मला शंभर टक्के खात्री आहे. हे विसरू नकोस की, माझे तुझ्यावर आणि तू माझ्यासाठी करत असलेल्या प्रत्येक गोष्टीवर खूप प्रेम आहे.</p>
-  <!-- ✏️ YOUR FINAL LINE -->
   <p class="closing-msg" style="font-style:italic;font-size:1.05rem;">Happy Mother's Day!! 🌸</p>
-  <!-- ✏️ YOUR NAME -->
   <p class="closing-sig" id="closing-sig">— With love, Abir Palekar</p>
 </section>
 
 <script>
-  const pc = document.getElementById('petals');
-  ['🌸','🌷','🌼','✿','❀'].forEach(e => {
-    for (let j=0;j<3;j++) {
-      const p=document.createElement('div'); p.className='petal'; p.textContent=e;
-      p.style.cssText=`left:${Math.random()*100}%;font-size:${0.8+Math.random()*1.2}rem;animation-duration:${6+Math.random()*10}s;animation-delay:${Math.random()*8}s;`;
-      pc.appendChild(p);
-    }
-  });
-  const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:0.15});
-  document.querySelectorAll('.year-entry,.section-header').forEach(el=>obs.observe(el));
-  const sigObs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)setTimeout(()=>e.target.classList.add('visible'),600);}),{threshold:0.5});
+  // ── FULL-PAGE CHERRY BLOSSOM PETALS ──
+  // SVG petal paths — 3 soft petal shapes for variety
+  const petalShapes = [
+    // rounded teardrop
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 26">
+      <path d="M10 0 C4 4, 0 10, 0 16 C0 22, 4 26, 10 26 C16 26, 20 22, 20 16 C20 10, 16 4, 10 0Z" fill="FILL" opacity="OPACITY"/>
+      <path d="M10 2 C10 10, 10 18, 10 25" stroke="STROKE" stroke-width="0.5" opacity="0.3" fill="none"/>
+    </svg>`,
+    // oval petal
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 28">
+      <ellipse cx="11" cy="14" rx="11" ry="14" fill="FILL" opacity="OPACITY"/>
+      <path d="M11 2 C11 12, 11 20, 11 27" stroke="STROKE" stroke-width="0.5" opacity="0.3" fill="none"/>
+    </svg>`,
+    // wide petal
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 22">
+      <path d="M13 0 C4 2, 0 8, 0 11 C0 17, 5 22, 13 22 C21 22, 26 17, 26 11 C26 8, 22 2, 13 0Z" fill="FILL" opacity="OPACITY"/>
+      <path d="M13 1 C13 8, 13 16, 13 22" stroke="STROKE" stroke-width="0.5" opacity="0.3" fill="none"/>
+    </svg>`
+  ];
+
+  // Soft cherry blossom colour palette
+  const petalColors = [
+    { fill: '#f9c8d4', stroke: '#e8a0b4' },
+    { fill: '#fbd5e0', stroke: '#e8afc0' },
+    { fill: '#f5b8cc', stroke: '#d990aa' },
+    { fill: '#fce4ec', stroke: '#f0b8cc' },
+    { fill: '#f8d0dc', stroke: '#e8a8bc' },
+  ];
+
+  const canvas = document.getElementById('petal-canvas');
+  const PETAL_COUNT = 28;
+
+  for (let i = 0; i < PETAL_COUNT; i++) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'petal';
+
+    const size = 10 + Math.random() * 14;           // 10–24px
+    const color = petalColors[Math.floor(Math.random() * petalColors.length)];
+    const shape = petalShapes[Math.floor(Math.random() * petalShapes.length)];
+    const opacity = (0.45 + Math.random() * 0.45).toFixed(2); // 0.45–0.9
+    const sway = (Math.random() > 0.5 ? 1 : -1) * (40 + Math.random() * 80); // ±40–120px horizontal drift
+    const duration = 8 + Math.random() * 14;        // 8–22s
+    const delay = Math.random() * 20;               // stagger up to 20s
+
+    wrapper.style.cssText = `
+      left: ${Math.random() * 110 - 5}%;
+      width: ${size}px;
+      height: ${size * 1.3}px;
+      --sway: ${sway}px;
+      animation-duration: ${duration}s;
+      animation-delay: -${delay}s;
+    `;
+
+    wrapper.innerHTML = shape
+      .replace(/FILL/g, color.fill)
+      .replace(/STROKE/g, color.stroke)
+      .replace(/OPACITY/g, opacity);
+
+    canvas.appendChild(wrapper);
+  }
+
+  // ── SCROLL REVEAL ──
+  const obs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.15 });
+  document.querySelectorAll('.year-entry,.section-header').forEach(el => obs.observe(el));
+
+  const sigObs = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), 600); }), { threshold: 0.5 });
   sigObs.observe(document.getElementById('closing-sig'));
-  document.querySelectorAll('[data-count]').forEach(el=>{
-    const co=new IntersectionObserver(es=>{
-      es.forEach(e=>{
-        if(!e.isIntersecting)return;
-        const t=parseInt(el.dataset.count),inc=t/(1800/16); let c=0;
-        const tm=setInterval(()=>{c=Math.min(c+inc,t);el.textContent=Math.floor(c).toLocaleString();if(c>=t)clearInterval(tm);},16);
+
+  // ── COUNTING NUMBERS ──
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const co = new IntersectionObserver(es => {
+      es.forEach(e => {
+        if (!e.isIntersecting) return;
+        const t = parseInt(el.dataset.count), inc = t / (1800 / 16); let c = 0;
+        const tm = setInterval(() => { c = Math.min(c + inc, t); el.textContent = Math.floor(c).toLocaleString(); if (c >= t) clearInterval(tm); }, 16);
         co.unobserve(el);
       });
-    },{threshold:0.5});
+    }, { threshold: 0.5 });
     co.observe(el);
   });
 </script>
